@@ -1,71 +1,80 @@
 package miscapp;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseDragEvent;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import miscapp.gameObjects.Map;
-import miscapp.options.WindowResolution;
+import miscapp.scenes.MapScene;
 
-import java.io.FileNotFoundException;
+
 
 public class Main extends Application{
+    
     public static void main(String[] args) {
         launch(args);
     }
     
     //Instance variables
-    private double winWidth = 800;
-    private double winHeight = 600;
+    private double winWidth = 1000;
+    private double winHeight = 800;
     
-    //Pane canvas = new Pane();
     private Group root = new Group();
-    
-    //Get objects
-    private MenuBar menu = new MenuBar();
-    private WindowResolution winSettings = new WindowResolution();
-    private Map mapObj;
-    {
-        try{
-            mapObj = new Map(winHeight);
-        } catch(FileNotFoundException e){
-            e.printStackTrace();
-        }
-    } //Try catch for menu object to handle FileNotFoundException, if image cant be found
-    
     private Scene scene = new Scene(root, winWidth, winHeight);
     
-    //Stuff to test methods
-    private Button resize = new Button("Change window size");
-
-    Shape shape = new Rectangle(winWidth,winHeight);
+    private StackPane mapImageView = new StackPane();
+    
+    //New objects
+    private MapScene map = new MapScene();
+    
+    private Label label = new Label("Clicked");
     
     @Override
-    public void start(Stage stage) throws Exception {
-
-    mapObj.imageSettings(); //Get image settings method
-
-    menu.menuView();
-    //Add objects to scene here
-    root.getChildren().add(shape);
-    root.getChildren().add(menu.menuGrid);
-    root.getChildren().add(mapObj.viewImg);
-
+    public void start(Stage stage) {
+        stage.setResizable(true);
+        stage.setTitle("Miscreated");
     
-    stage.setResizable(false);
-    stage.setScene(scene);
-    stage.show();
+        loadImages();
+        winObjectSettings();
+        
+        new AnimationTimer(){
+            @Override
+            public void handle(long currentTime) {
+                map.imageViewController(winWidth,winHeight);
+                
+                map.sp.prefWidthProperty().bind(mapImageView.widthProperty());
+                map.sp.prefHeightProperty().bind(mapImageView.heightProperty());
+            }
+        }.start();
+        
+        //Add to scene
+        mapImageView.getChildren().add(map.sp);
+        root.getChildren().addAll(mapImageView);
+        root.getChildren().add(label);
+        
+        stage.setScene(scene);
+        stage.show();
     }
     
-    public void setResolution(){
-        //Listener to change the height of the window
-        scene.widthProperty().addListener((observableValue, winWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
+    public void winObjectSettings(){
+        mapImageView.setLayoutX(200);
+        
+        mapImageView.prefWidthProperty().bind(scene.widthProperty().subtract(200));
+        mapImageView.prefHeightProperty().bind(scene.heightProperty());
+        
+        label.setTextFill(Color.BLACK);
+        label.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD,20));
+        label.setOnMouseEntered(e -> label.setTextFill(Color.GREEN));
+        label.setOnMouseExited(e -> label.setTextFill(Color.BLACK));
+        label.setOnMouseClicked(e -> root.getChildren().remove(mapImageView));
+    }
     
-        //Listener to change the height of the window
-        scene.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> System.out.println("Height: " + newSceneHeight));
+    public void loadImages() {
+        map.setImage("file:images/miscreatedMap.png");
     }
 }

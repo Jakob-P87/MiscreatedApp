@@ -1,19 +1,21 @@
 package miscapp.options;
 
-import miscapp.Main;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class WindowResolution{
+    public WindowResolution() throws FileNotFoundException{
     
-    public double newWidth;
-    public double newHeight;
-    
-    public void res1920x1080(){
-        this.newWidth = 1920;
-        this.newHeight = 1080;
     }
     
-    public void res800x600(){
-        this.newWidth = 800;
-        this.newHeight = 600;
+    private Image fullScreenLogo = new Image(new FileInputStream("images/FullcreenLogo.jpg"));
+    public ImageView showLogo = new ImageView(fullScreenLogo);
+    
+    public void imgSettings(){
+        showLogo.setFitHeight(30);
+        showLogo.setFitWidth(30);
     }
 }
