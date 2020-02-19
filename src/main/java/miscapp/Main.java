@@ -3,11 +3,14 @@ package miscapp;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import miscapp.gameObjects.Map;
 import miscapp.options.WindowResolution;
 
-import java.awt.*;
 import java.io.FileNotFoundException;
 
 public class Main extends Application{
@@ -16,8 +19,8 @@ public class Main extends Application{
     }
     
     //Instance variables
-    private double winWidth = 1080;
-    private double winHeight = 880;
+    private double winWidth = 800;
+    private double winHeight = 600;
     
     //Pane canvas = new Pane();
     private Group root = new Group();
@@ -38,15 +41,20 @@ public class Main extends Application{
     
     //Stuff to test methods
     private Button resize = new Button("Change window size");
+
+    Shape shape = new Rectangle(winWidth,winHeight);
     
     @Override
     public void start(Stage stage) throws Exception {
+
     mapObj.imageSettings(); //Get image settings method
+
     menu.menuView();
-    
     //Add objects to scene here
+    root.getChildren().add(shape);
     root.getChildren().add(menu.menuGrid);
     root.getChildren().add(mapObj.viewImg);
+
     
     stage.setResizable(false);
     stage.setScene(scene);
@@ -55,7 +63,7 @@ public class Main extends Application{
     
     public void setResolution(){
         //Listener to change the height of the window
-        scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
+        scene.widthProperty().addListener((observableValue, winWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
     
         //Listener to change the height of the window
         scene.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> System.out.println("Height: " + newSceneHeight));
