@@ -5,8 +5,11 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -31,8 +34,7 @@ public class Main extends Application{
     
     //New objects
     private MapScene map = new MapScene();
-    
-    private Label label = new Label("Clicked");
+    private MenuBar menu = new MenuBar();
     
     @Override
     public void start(Stage stage) {
@@ -41,37 +43,37 @@ public class Main extends Application{
     
         loadImages();
         winObjectSettings();
+        menu.mapButton(root, mapImageView);
         
         new AnimationTimer(){
             @Override
             public void handle(long currentTime) {
                 map.imageViewController(winWidth,winHeight);
                 
-                map.sp.prefWidthProperty().bind(mapImageView.widthProperty());
-                map.sp.prefHeightProperty().bind(mapImageView.heightProperty());
+
             }
         }.start();
         
         //Add to scene
         mapImageView.getChildren().add(map.sp);
         root.getChildren().addAll(mapImageView);
-        root.getChildren().add(label);
-        
+        root.getChildren().add(menu.map);
+
         stage.setScene(scene);
         stage.show();
     }
     
     public void winObjectSettings(){
         mapImageView.setLayoutX(200);
-        
+        mapImageView.setLayoutY(10);
+
+        map.sp.prefWidthProperty().bind(mapImageView.widthProperty());
+        map.sp.prefHeightProperty().bind(mapImageView.heightProperty());
+
         mapImageView.prefWidthProperty().bind(scene.widthProperty().subtract(200));
-        mapImageView.prefHeightProperty().bind(scene.heightProperty());
-        
-        label.setTextFill(Color.BLACK);
-        label.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD,20));
-        label.setOnMouseEntered(e -> label.setTextFill(Color.GREEN));
-        label.setOnMouseExited(e -> label.setTextFill(Color.BLACK));
-        label.setOnMouseClicked(e -> root.getChildren().remove(mapImageView));
+        mapImageView.prefHeightProperty().bind(scene.heightProperty().subtract(10));
+        mapImageView.setStyle("-fx-border-color: black;" +
+        "-fx-border-width: 10px;" + "-fx-border-radius: 5px;" + "-fx-border-color: transparent;");
     }
     
     public void loadImages() {
