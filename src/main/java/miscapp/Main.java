@@ -4,18 +4,11 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import miscapp.scenes.MapScene;
-
-
 
 public class Main extends Application{
     
@@ -27,22 +20,29 @@ public class Main extends Application{
     private double winWidth = 1000;
     private double winHeight = 800;
     
+    //Scene settings
     private Group root = new Group();
     private Scene scene = new Scene(root, winWidth, winHeight);
     
-    private StackPane mapImageView = new StackPane();
-    
-    //New objects
+    //Scene objects
     private MapScene map = new MapScene();
     private MenuBar menu = new MenuBar();
+    
+    private StackPane mapImageView = new StackPane();
+    private StackPane backgroundPane = new StackPane();
+    
+    //Extra objects
+    private Rectangle background = new Rectangle(5000,5000);
     
     @Override
     public void start(Stage stage) {
         stage.setResizable(true);
         stage.setTitle("Miscreated");
-    
+        
+        //Methods for object settings
         loadImages();
         winObjectSettings();
+        
         menu.mapButton(root, mapImageView);
         
         new AnimationTimer(){
@@ -54,8 +54,8 @@ public class Main extends Application{
             }
         }.start();
         
-        //Add to scene
-        mapImageView.getChildren().add(map.sp);
+        //Add objects to scene
+        root.getChildren().add(backgroundPane);
         root.getChildren().addAll(mapImageView);
         root.getChildren().add(menu.map);
 
@@ -70,10 +70,17 @@ public class Main extends Application{
         map.sp.prefWidthProperty().bind(mapImageView.widthProperty());
         map.sp.prefHeightProperty().bind(mapImageView.heightProperty());
 
-        mapImageView.prefWidthProperty().bind(scene.widthProperty().subtract(200));
-        mapImageView.prefHeightProperty().bind(scene.heightProperty().subtract(10));
+        mapImageView.prefWidthProperty().bind(scene.widthProperty().subtract(210));
+        mapImageView.prefHeightProperty().bind(scene.heightProperty().subtract(20));
         mapImageView.setStyle("-fx-border-color: black;" +
-        "-fx-border-width: 10px;" + "-fx-border-radius: 5px;" + "-fx-border-color: transparent;");
+        "-fx-border-width: 10px;" + "-fx-border-radius: 5px;");
+        mapImageView.getChildren().add(map.sp);
+        
+        //Just to get a darker background
+        backgroundPane.prefWidthProperty().bind(scene.widthProperty());
+        backgroundPane.prefHeightProperty().bind(scene.heightProperty());
+        backgroundPane.getChildren().add(background);
+        background.setFill(Color.grayRgb(25));
     }
     
     public void loadImages() {
